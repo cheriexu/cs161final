@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 
-arr = np.zeros((2048, 2048), dtype=int)
+
 def cut(word, i):
 	return word[i:]+word[0:i]
 def CLCS(A,B):
@@ -13,6 +13,7 @@ def CLCS(A,B):
 			max = clcs
 	return max
 def LCS(A,B):
+	arr = np.zeros((2048, 2048), dtype=int)
 	m = len(A)
 	n = len(B)
 

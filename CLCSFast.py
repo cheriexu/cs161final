@@ -1,12 +1,19 @@
 import sys
 import numpy as np
 
-arr = np.zeros((2048, 2048), dtype=int)
+def CLCS(A,B,paths,l,u):
+	if u-l <= 1: return
+	mid = (u+l)/2
+	paths[mid] = shortestpath(A,B,mid, paths[l],paths[u])
+	CLCS(A,B,paths,l,mid)
+	CLCS(A,B,paths, mid,u)
+#arr = np.zeros((2048, 2048), dtype=int)
+
+#def reconstructPath(m,n):
 
 def LCS(A,B):
 	m = len(A)
 	n = len(B)
-
 	for i in range(1,m+1):
 		for j in range(1,n+1):
 			if A[i-1] == B[j-1]:
@@ -22,7 +29,7 @@ def main():
 	
 	for l in sys.stdin:
 		A,B = l.split()
-		print LCS(A,B)
+		print CLCS(A,B)
 	return
 
 if __name__ == '__main__':
