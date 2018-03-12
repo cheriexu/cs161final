@@ -4,7 +4,7 @@ import numpy as np
 arr = np.zeros((2048, 2048), dtype=int)
 def cut(word, i):
 	return word[i:]+word[0:i]
-def CLCS(A,B,k):
+def CLCS(A,B):
 	max = 0
 	for i in range(len(A)):
 		editedA = cut(A,i)
