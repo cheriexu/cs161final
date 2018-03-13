@@ -1,9 +1,10 @@
 import sys
 import numpy as np
+np.set_printoptions(threshold='nan')
 
-arr = np.zeros((2048, 2048), dtype=int)
 
-def LCS(A,B):
+
+def LCS(A,B,arr):
 	m = len(A)
 	n = len(B)
 
@@ -13,16 +14,40 @@ def LCS(A,B):
 				arr[i][j] = arr[i-1][j-1]+1
 			else:
 				arr[i][j] = max(arr[i-1][j], arr[i][j-1])
-
+	print arr
 	return arr[m][n]
-
+def pathReconstruction (A,B,arr):
+	path = {} #keys are columns, items are rows
+	i = len(A)
+	j = len(B)
+	while i > 0 and j > 0:
+		if A[i-1] == B[j-1]:
+			coord = path.get(j - 1, [])
+			coord.append(i-1)
+			path[j-1] = coord
+			i-=1
+			j-=1
+		elif arr[i-1][j] > arr[i][j-1]:
+			coord = path.get(j, [])
+			coord.append(i-1)
+			path[j] = coord
+			i-=1
+		else:
+			coord = path.get(j - 1, [])
+			coord.append(i)
+			path[j - 1] = coord
+			j-=1
+	return path
 def main():
 	if len(sys.argv) != 1:
 		sys.exit('Usage: `python LCS.py < input`')
 	
 	for l in sys.stdin:
 		A,B = l.split()
-		print LCS(A,B)
+		print A,B
+		arr = np.zeros((len(A)+1, len(B)+1), dtype=int)
+		print LCS(A,B,arr)
+		print pathReconstruction (A,B,arr)
 	return
 
 if __name__ == '__main__':
