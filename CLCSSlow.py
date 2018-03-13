@@ -32,7 +32,7 @@ def main():
 	
 	for l in sys.stdin:
 		A,B = l.split()
-		print CLCS(A,B)
+		print( CLCS(A,B))
 	return
 
 if __name__ == '__main__':

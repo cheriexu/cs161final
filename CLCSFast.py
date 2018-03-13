@@ -11,9 +11,7 @@ def getPath(start, bound, paths):
 	p = [0 for x in range(n + 1)]
 	for j in range(n + 1):
 		if bound is "upper":
-			#TODO CHeck max and min, upper bound
 			p[j] = max(paths[start][j])
-		
 		else:
 			p[j] = min(paths[start][j])
 	return p
@@ -30,7 +28,6 @@ def pathReconstruction (A,B,start, arr, lower_path=[], upper_path=[]):
 	while i >= start and j > 0:
 		# moving diagonally
 		if inRange(i-1,j-1) and A[(i-1)%m] == B[j-1]:
-			
 			path[j - 1] = [i-1]
 			i-=1
 			j-=1
@@ -56,36 +53,32 @@ def shortestpath(A, B, idx, l, u, arr, paths):
 		arr[i][0] = 0
 	lower_path = getPath(l, "lower", paths)  #lower bound, you want the min
 	upper_path = getPath(u, "upper", paths) #uppser boudn you want the max
-	'''def inRange(row, col, lower_path=lower_path,upper_path=upper_path):
-		return lower_path[col] >= row and upper_path[col] <= row'''
+	def inRange(row, col, lower_path=lower_path,upper_path=upper_path):
+		return lower_path[col] >= row and upper_path[col] <= row
 	for i in range(len(upper_path)):
 		arr[upper_path[i]][i] = 0
 		arr[max(upper_path[i]-1,0)][i] = 0
-	print idx, A[idx:]+A[0:idx], B
 	for j in range(1,n+1):#changed 2 to 1
-		print j,"range", max(idx+1,upper_path[j]),min(lower_path[j]+1,2*m+1)
-		print "upper",upper_path[j], "lower",lower_path[j]
 		for i in range(max(idx+1,upper_path[j]),min(lower_path[j]+1,2*m+1)):
-			
 			 # this seem to work but  think of exceptions
-			if True:#inRange(i, j): #what if i, j not in range
-				print A, A[(i-1)%m], B[j-1], i-1,j-1
-				if A[(i-1)%m] == B[j-1]:
-					arr[i][j] = arr[i-1][j-1]+1
-					print arr[i][j]
-				else:
-					#CHECK THIS OUT TODO, what shouold be the conditions
-					'''if inRange(i-1, j ):
-						arr[i][j] = arr[i - 1][j]
-					if inRange(i, j - 1) and inRange(i-1, j ) :'''
+			if A[(i-1)%m] == B[j-1]:
+				arr[i][j] = arr[i-1][j-1]+1
+				#print arr[i][j]
+			else:
+				'''if inRange(i-1, j ):
+				arr[i][j] = arr[i - 1][j]'''
+				if inRange(i, j - 1):
 					arr[i][j] = max(arr[i-1][j] , arr[i][j - 1])
+				else:
+					arr[i][j] = arr[i-1][j]
 					#print "max", arr[i-1][j] , arr[i][j - 1]
 					#print "upper", upper_path[j-1], lower_path[j-1]
-	print arr
+#	print arr
 	path = pathReconstruction(A,B,idx,arr,lower_path,upper_path) #changed A[idx:]+A[0:idx] to A
-	print path
+
+#	print path
 	value = arr[m+idx][n]
-	print value
+#	print value
 	return path, value
 
 
@@ -95,7 +88,6 @@ def CLCS(A,B, arr, paths, values, l=m,u=0,):
 	if l-u <= 1: return
 	mid = (u+l)/2
 	s = shortestpath(A,B,mid,l,u, arr, paths)
-	#print s
 	paths[mid], values[mid] = s
 	CLCS(A,B,arr,paths,values,l, mid)
 	CLCS(A,B,arr,paths,values,mid,u)
