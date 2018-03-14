@@ -12,6 +12,7 @@ def CLCS(A,B):
 		if clcs > max:
 			max = clcs
 	return max
+
 def LCS(A,B):
 	arr = np.zeros((2048, 2048), dtype=int)
 	m = len(A)

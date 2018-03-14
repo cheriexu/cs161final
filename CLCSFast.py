@@ -28,26 +28,32 @@ def pathReconstruction (A,B,start, arr, lower_path=[], upper_path=[]):
 	while i >= start and j > 0:
 		# moving diagonally
 		if inRange(i-1,j-1) and A[(i-1)%m] == B[j-1]:
-			path[j - 1] = [i-1]
+			coord = path.get(j - 1, [])
+			coord.append(i-1)
+			path[j-1] = coord
 			i-=1
 			j-=1
 		# moving left
 		elif inRange(i,j-1) and arr[i-1][j] <= arr[i][j-1]:
-			path[j-1] = path.get(j - 1, []) + [i]
+			coord = path.get(j - 1, [])
+			coord.append(i)
+			path[j - 1] = coord
+			prev_j = j
 			j-=1
 		else:
 			path[j] = [i-1]
 			i-=1
+
 	# moving up
 # if final col is greater than final start
 	if j > 0:
 		for x in range(j+1):
 			path[x] = [0]
-
 	return path
 
 # arr has (start, col) indexing
 def shortestpath(A, B, idx, l, u, arr, paths):
+	#print "mid is", idx, A[idx:]+A[:idx],B
 	arr[idx] = [0 for i in range(n + 1)]
 	for i in range(2*m + 1):
 		arr[i][0] = 0
@@ -56,29 +62,21 @@ def shortestpath(A, B, idx, l, u, arr, paths):
 	def inRange(row, col, lower_path=lower_path,upper_path=upper_path):
 		return lower_path[col] >= row and upper_path[col] <= row
 	for i in range(len(upper_path)):
-		arr[upper_path[i]][i] = 0
+		#arr[upper_path[i]][i] = 0
 		arr[max(upper_path[i]-1,0)][i] = 0
-	for j in range(1,n+1):#changed 2 to 1
+	for j in range(1,n+1):
 		for i in range(max(idx+1,upper_path[j]),min(lower_path[j]+1,2*m+1)):
-			 # this seem to work but  think of exceptions
-			if A[(i-1)%m] == B[j-1]:
+			 if inRange(i-1,j-1) and A[(i-1)%m] == B[j-1]:
 				arr[i][j] = arr[i-1][j-1]+1
-				#print arr[i][j]
-			else:
-				'''if inRange(i-1, j ):
-				arr[i][j] = arr[i - 1][j]'''
+			 else:
 				if inRange(i, j - 1):
 					arr[i][j] = max(arr[i-1][j] , arr[i][j - 1])
 				else:
 					arr[i][j] = arr[i-1][j]
-					#print "max", arr[i-1][j] , arr[i][j - 1]
-					#print "upper", upper_path[j-1], lower_path[j-1]
-#	print arr
 	path = pathReconstruction(A,B,idx,arr,lower_path,upper_path) #changed A[idx:]+A[0:idx] to A
-
-#	print path
+	#print path
 	value = arr[m+idx][n]
-#	print value
+	#print value
 	return path, value
 
 
@@ -112,9 +110,11 @@ def main():
 	finals = []
 	if len(sys.argv) != 1:
 		sys.exit('Usage: `python LCS.py < input`')
-
+	
 	for idx, l in enumerate(sys.stdin):
+		#if idx != 2: continue
 		A,B = l.split()
+		#print A, B
 		m, n = len(A), len(B)
 		if m < 2:
 			finals.append(1 if A in B else 0)
@@ -124,13 +124,16 @@ def main():
 			paths = {}
 			arr = np.zeros((2*m+1, n+1), dtype=int)
 			LCS(A,B,0,arr)
-			
+			#print A,B
 			paths[0] = pathReconstruction(A,B,0,arr)#Path traced by LCS(a,b)
-			LCS(A,B,m,arr)
+			#print "patho",paths[0]
 			
+			LCS(A,B,m,arr)
 			paths[m] = pathReconstruction(A,B,m,arr)
+			#print paths[m]
 			CLCS(A,B,arr, paths, values, m, 0)
-			print(values)
+			
+			#print(values)
 			maxval = max([values[key] for key in values.keys()])
 			print maxval
 			finals.append(maxval)

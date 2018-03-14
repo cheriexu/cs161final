@@ -28,12 +28,18 @@ def pathReconstruction (A,B,arr):
 			i-=1
 			j-=1
 		elif arr[i-1][j] > arr[i][j-1]:
+			print "case 2"
 			coord = path.get(j, [])
+			if len(coord) != 0 :
+				print j,"more than 1"
 			coord.append(i-1)
 			path[j] = coord
 			i-=1
 		else:
+			print "case 3"
 			coord = path.get(j - 1, [])
+			if len(coord) != 0 :
+				print j,"more than 1"
 			coord.append(i)
 			path[j - 1] = coord
 			j-=1
